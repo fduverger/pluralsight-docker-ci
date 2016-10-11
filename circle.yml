@@ -1,8 +1,33 @@
+# The deployment section should be excluded until
+
+# it is explicitly included in module 5
+
+
+
+machine:
+
+  services:
+
+  - docker
+
+
+
+dependencies:
+  override:
+    - docker info
+    - docker build -t fduverger/pluralsight-docker-ci .
+
 deployment:
-  dockerhub:
+  hub:
     branch: master
     commands:
-      - $DOCKER_HUB_TRIGGER
+     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+     - docker push fduverger/pluralsight-docker-ci
+
+notify:
+  webhooks:
+    - url: https://registry.hub.docker.com/u/fduverger/pluralsight-docker-ci/trigger/6cc56eb2-c98c-44be-87f6-1e93b3e4aacf/
+
 test:
   override:    
     - mocha
